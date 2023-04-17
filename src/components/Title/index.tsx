@@ -1,10 +1,10 @@
-import { TitleStyled } from './styles'
+import { StyledTitle } from './styles'
 
 interface TitleProps {
-  text: string
+  children: string
   color?: 'white' | 'black'
 }
 
-export function Title({ text, color }: TitleProps) {
-  return <TitleStyled color={color}>{text}</TitleStyled>
+export function Title({ children, color }: TitleProps) {
+  return <StyledTitle color={color}>{children}</StyledTitle>
 }

@@ -1,20 +1,23 @@
 import { BrowserRouter } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 import { MainRoutes } from './routes'
-import { Container } from './components/Container'
+import { Container } from './components'
 import { AuthContextProvider } from './contexts/AuthContext'
-import { Provider } from 'react-redux'
-import { store } from './redux/store'
+import { ApiProvider } from '@reduxjs/toolkit/query/react'
+import { postsApi } from './redux/features/postSlice'
 
 export function App() {
   return (
     <BrowserRouter>
-      <Provider store={store}>
+      <ApiProvider api={postsApi}>
         <AuthContextProvider>
           <Container>
             <MainRoutes />
+
+            <ToastContainer />
           </Container>
         </AuthContextProvider>
-      </Provider>
+      </ApiProvider>
     </BrowserRouter>
   )
 }

@@ -1,6 +1,6 @@
 import { styled } from '../../styles'
 
-export const TitleStyled = styled('h3', {
+export const StyledTitle = styled('h3', {
   fontSize: '$xl',
   fontWeight: 700,
 

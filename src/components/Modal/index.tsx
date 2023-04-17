@@ -8,17 +8,23 @@ interface ModalProps {
   content?: ReactNode
   children: ReactNode
   title: string
+  isOpen: boolean
+  onClose: (open: boolean) => void
+  onClick: () => void
 }
 
 export function Modal({
   title,
   variant,
   actionButtonTitle,
+  isOpen = false,
+  onClose,
+  onClick,
   content,
   children,
 }: ModalProps) {
   return (
-    <Dialog.Root>
+    <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Trigger asChild>
         <button onClick={() => {}}>{children}</button>
       </Dialog.Trigger>
@@ -37,7 +43,9 @@ export function Modal({
                 </ModalButton>
               </Dialog.Close>
 
-              <ModalButton color={variant}>{actionButtonTitle}</ModalButton>
+              <ModalButton onClick={onClick} color={variant}>
+                {actionButtonTitle}
+              </ModalButton>
             </ModalFooter>
           </ModalContent>
         </ModalWrapper>

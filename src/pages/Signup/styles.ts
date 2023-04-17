@@ -20,7 +20,7 @@ export const SignupFormContainer = styled('form', {
   display: 'flex',
   flexDirection: 'column',
 
-  p: {
+  label: {
     marginTop: '1.5rem',
   },
 

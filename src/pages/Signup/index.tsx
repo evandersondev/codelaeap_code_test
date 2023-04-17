@@ -26,16 +26,17 @@ export function Signup() {
   })
 
   function handleSignup(data: LoginFormData) {
-    login(data.username)
+    const { username } = loginFormSchema.parse(data)
+    login(username)
   }
 
   return (
     <SignupWrapper>
       <SignupContainer>
-        <Title text="Welcome to CodeLeap network!" />
+        <Title>Welcome to CodeLeap network!</Title>
 
         <SignupFormContainer onSubmit={handleSubmit(handleSignup)}>
-          <p>Please enter your username</p>
+          <label>Please enter your username</label>
 
           <input
             placeholder="John doe"
@@ -45,7 +46,7 @@ export function Signup() {
 
           {errors.username && <span>{errors.username.message}</span>}
 
-          <Button type="submit" title="ENTER" />
+          <Button type="submit">ENTER</Button>
         </SignupFormContainer>
       </SignupContainer>
     </SignupWrapper>

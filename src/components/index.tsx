@@ -1,2 +1,5 @@
 export { Button } from './Button'
 export { Title } from './Title'
+export { Form } from './Form'
+export { Modal } from './Modal'
+export { Container } from './Container'

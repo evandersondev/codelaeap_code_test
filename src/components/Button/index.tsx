@@ -2,9 +2,9 @@ import { HTMLProps } from 'react'
 import { ButtonStyled } from './styles'
 
 interface ButtonProps extends HTMLProps<HTMLButtonElement> {
-  title: string
+  children: string
 }
 
-export function Button({ title }: ButtonProps) {
-  return <ButtonStyled>{title}</ButtonStyled>
+export function Button({ children }: ButtonProps) {
+  return <ButtonStyled>{children}</ButtonStyled>
 }

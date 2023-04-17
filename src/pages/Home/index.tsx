@@ -1,64 +1,90 @@
-import { useEffect, useState } from 'react'
-import { PostItem } from './components/PostItem'
-import { HomeContent, HomeForm, HomeHeader, HomeWrapper } from './styles'
-import { api } from '../../services/api'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { toast } from 'react-toastify'
+import { HomeContent, HomeHeader, HomeWrapper } from './styles'
+import {
+  useAddPostMutation,
+  useGetAllPostsQuery,
+} from '../../redux/features/postSlice'
+import { PostItem } from './components/PostItem'
+import { Button, Form, Title } from '../../components'
+import { showSuccessNotification } from '../../utils/notifications'
 
-const requestSchema = z.object({
-  count: z.number(),
-  next: z.string().nullable(),
-  previous: z.string().nullable(),
-  results: z.array(
-    z.object({
-      id: z.number(),
-      username: z.string(),
-      created_datetime: z.string(),
-      title: z.string(),
-      content: z.string(),
-    }),
-  ),
+const addPostSchema = z.object({
+  title: z
+    .string()
+    .min(3, 'The title must be at least 3 characters long')
+    .nonempty('Title is required'),
+  content: z
+    .string()
+    .min(10, 'The content must be at least 10 characters long')
+    .nonempty('Content is required'),
 })
 
-type RequestType = z.infer<typeof requestSchema>
-
-interface Post {
-  id: number
-  username: string
-  created_datetime: string
-  title: string
-  content: string
-}
+type AddPostData = z.infer<typeof addPostSchema>
 
 export function Home() {
-  const [posts, setPosts] = useState<Post[]>([])
+  const username = localStorage.getItem('@codeleap:username')
+  const { data: posts } = useGetAllPostsQuery({})
+  const [addPost] = useAddPostMutation()
 
-  useEffect(() => {
-    api.get<RequestType>('/careers/').then((response) => {
-      const { results } = requestSchema.parse(response)
-      setPosts(results)
-    })
-  }, [])
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<AddPostData>({
+    resolver: zodResolver(addPostSchema),
+  })
+
+  async function hanldeAddNewPost(data: AddPostData) {
+    const { title, content } = addPostSchema.parse(data)
+
+    // await addPost({
+    //   username: username!,
+    //   title,
+    //   content,
+    // })
+
+    showSuccessNotification('Post created')
+
+    reset()
+
+    // TODO: Look this!
+  }
 
   return (
     <HomeWrapper>
       <HomeHeader>
-        <h1>CodeLeap Network</h1>
+        <Title color="white">CodeLeap Network</Title>
       </HomeHeader>
 
       <HomeContent>
-        <HomeForm>
-          <h3>What's on your mind?</h3>
+        <Form onSubmit={handleSubmit(hanldeAddNewPost)}>
+          <Title>What's on your mind?</Title>
 
           <label htmlFor="title">Title</label>
-          <input id="title" type="text" placeholder="Hello World" />
+          <input
+            id="title"
+            type="text"
+            placeholder="Hello World"
+            {...register('title')}
+          />
+          {errors.title && <span>{errors.title.message}</span>}
 
           <label htmlFor="content">Content</label>
-          <textarea id="content" placeholder="Content here" />
+          <textarea
+            id="content"
+            placeholder="Content here"
+            {...register('content')}
+          />
+          {errors.content && <span>{errors.content.message}</span>}
 
-          <button>Create</button>
-        </HomeForm>
+          <Button type="submit">Create</Button>
+        </Form>
 
-        {posts.map((post, index) => {
+        {posts?.results.map((post, index) => {
           return <PostItem key={index} post={post} />
         })}
       </HomeContent>
