@@ -25,4 +25,10 @@ export const globalStyles = globalCss({
   button: {
     cursor: 'pointer',
   },
+
+  'input:focus, textarea:focus, button:focus': {
+    outlineColor: '$purple500',
+    outlineOffset: 2,
+    outlineWidth: 2,
+  }
 })

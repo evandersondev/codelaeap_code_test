@@ -1,32 +1,71 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { ModalButton, ModalContent, ModalFooter, ModalWrapper } from './styles'
 import { ReactNode } from 'react'
+import { Form } from '../Form'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../../redux/store'
+import { useDeletePostMutation, useUpdatePostMutation } from '../../redux/features/postSlice'
+import { hanldeModelOpen } from '../../redux/features/modalSlice'
+
+const postSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  content: z.string(),
+})
+
+type PostData = z.infer<typeof postSchema>
 
 interface ModalProps {
   actionButtonTitle: string
   variant: 'danger' | 'success'
-  content?: ReactNode
   children: ReactNode
   title: string
-  isOpen: boolean
-  onClose: (open: boolean) => void
-  onClick: () => void
+  post: PostData
+  type: 'edit' | 'delete'
 }
 
 export function Modal({
   title,
   variant,
   actionButtonTitle,
-  isOpen = false,
-  onClose,
-  onClick,
-  content,
+  post,
+  type,
   children,
 }: ModalProps) {
+  const dispatch = useDispatch()
+  const selectModal = useSelector((state: RootState) => state.modal.open)
+  const [deletePost] = useDeletePostMutation()
+  const [editPost] = useUpdatePostMutation()
+  const { register, handleSubmit } = useForm<PostData>({
+    resolver: zodResolver(postSchema),
+    defaultValues: {
+      id: post.id,
+      title: post.title,
+      content: post.content,
+    },
+  })
+
+  async function handleDeletePost() {
+    // await deletePost(post.id)
+    dispatch(hanldeModelOpen())
+  }
+
+  async function handleEditPost({ id, title, content }: PostData) {
+    await editPost({
+      id: id,
+      title,
+      content,
+    })
+    dispatch(hanldeModelOpen())
+  }
+
   return (
-    <Dialog.Root open={isOpen} onOpenChange={onClose}>
+    <Dialog.Root open={selectModal} onOpenChange={() => dispatch(hanldeModelOpen())}>
       <Dialog.Trigger asChild>
-        <button onClick={() => {}}>{children}</button>
+        <button>{children}</button>
       </Dialog.Trigger>
 
       <Dialog.Portal>
@@ -34,16 +73,34 @@ export function Modal({
           <ModalContent>
             <Dialog.Title>{title}</Dialog.Title>
 
-            {content}
+              {type === 'edit' && (
+                <Form>
+                <label htmlFor="title">Title</label>
+                <input
+                  {...register('title')}
+                  id="title"
+                  type="text"
+                  placeholder="Hello World"
+                />
+  
+                <label htmlFor="content">Content</label>
+                <textarea
+                  {...register('content')}
+                  id="content"
+                  placeholder="Content here"
+                />
+              </Form>
+              )}
 
-            <ModalFooter marginTop={content ? 'normal' : 'bigger'}>
+            <ModalFooter marginTop={type === 'edit' ? 'normal' : 'bigger'}>
               <Dialog.Close asChild>
-                <ModalButton border={content ? 'black' : 'gray'}>
+                <ModalButton border={type === 'edit' ? 'black' : 'gray'}>
                   Cancel
                 </ModalButton>
               </Dialog.Close>
 
-              <ModalButton onClick={onClick} color={variant}>
+              <ModalButton
+                onClick={type === 'edit' ? handleSubmit(handleEditPost) : handleDeletePost} color={variant}>
                 {actionButtonTitle}
               </ModalButton>
             </ModalFooter>

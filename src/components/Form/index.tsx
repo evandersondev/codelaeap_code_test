@@ -3,8 +3,9 @@ import { StyeledForm } from './styles'
 
 interface FormProps extends FormHTMLAttributes<HTMLFormElement> {
   children: ReactNode
+  border?: true | false
 }
 
-export function Form({ children, ...rest }: FormProps) {
-  return <StyeledForm {...rest}>{children}</StyeledForm>
+export function Form({ children, border, ...rest }: FormProps) {
+  return <StyeledForm border={border} {...rest}>{children}</StyeledForm>
 }

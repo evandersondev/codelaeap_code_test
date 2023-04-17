@@ -21,4 +21,20 @@ export const HomeContent = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   gap: '1.5rem',
+
+  form: {
+    input: {
+      margin: 0,
+    },
+
+    label: {
+      marginTop: '1.5rem'
+    },
+
+    span: {
+      color: '$red500',
+      fontSize: '$sm',
+      marginTop: '0.5rem',
+    },
+  }
 })

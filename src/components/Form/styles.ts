@@ -11,6 +11,7 @@ export const StyeledForm = styled('form', {
       true: {
         border: '1px solid $gray400',
         borderRadius: '16px',
+        padding: '1.5rem',
       },
       false: {
         border: 0,

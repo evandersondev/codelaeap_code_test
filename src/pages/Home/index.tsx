@@ -1,7 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { toast } from 'react-toastify'
 import { HomeContent, HomeHeader, HomeWrapper } from './styles'
 import {
   useAddPostMutation,
@@ -41,17 +40,15 @@ export function Home() {
   async function hanldeAddNewPost(data: AddPostData) {
     const { title, content } = addPostSchema.parse(data)
 
-    // await addPost({
-    //   username: username!,
-    //   title,
-    //   content,
-    // })
+    await addPost({
+      username: username!,
+      title,
+      content,
+    })
 
     showSuccessNotification('Post created')
 
     reset()
-
-    // TODO: Look this!
   }
 
   return (
@@ -61,7 +58,7 @@ export function Home() {
       </HomeHeader>
 
       <HomeContent>
-        <Form onSubmit={handleSubmit(hanldeAddNewPost)}>
+        <Form onSubmit={handleSubmit(hanldeAddNewPost)} border>
           <Title>What's on your mind?</Title>
 
           <label htmlFor="title">Title</label>
@@ -84,8 +81,8 @@ export function Home() {
           <Button type="submit">Create</Button>
         </Form>
 
-        {posts?.results.map((post, index) => {
-          return <PostItem key={index} post={post} />
+        {posts?.results.map((post) => {
+          return <PostItem key={post.id} post={post} />
         })}
       </HomeContent>
     </HomeWrapper>
