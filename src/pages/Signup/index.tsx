@@ -4,51 +4,63 @@ import { z } from 'zod'
 
 import { SignupContainer, SignupFormContainer, SignupWrapper } from './styles'
 import { Button, Title } from '../../components'
-import { useAuth } from '../../hooks/useAuth'
+import { useDispatch, useSelector } from 'react-redux'
+import { saveUsername } from '../../redux/features/authSlice'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { RootState } from '../../redux/store'
 
-const loginFormSchema = z.object({
-  username: z
-    .string()
-    .nonempty('Your username is required')
-    .min(3, 'Your username must be at least 3 characters long'),
+const signupFormSchema = z.object({
+	username: z
+		.string()
+		.nonempty('Your username is required')
+		.min(3, 'Your username must be at least 3 characters long'),
 })
 
-type LoginFormData = z.infer<typeof loginFormSchema>
+type SignupFormData = z.infer<typeof signupFormSchema>
 
 export function Signup() {
-  const { login } = useAuth()
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginFormSchema),
-  })
+	const dispatch = useDispatch()
+	const navigate = useNavigate()
+	const currentUsername = useSelector((state: RootState) => state.auth.username)
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<SignupFormData>({
+		resolver: zodResolver(signupFormSchema),
+	})
 
-  function handleSignup(data: LoginFormData) {
-    const { username } = loginFormSchema.parse(data)
-    login(username)
-  }
+	function handleSignup(data: SignupFormData) {
+		const { username } = signupFormSchema.parse(data)
+		dispatch(saveUsername(username))
+	}
 
-  return (
-    <SignupWrapper>
-      <SignupContainer>
-        <Title>Welcome to CodeLeap network!</Title>
+	useEffect(() => {
+		if (currentUsername) {
+			navigate(`/home/${currentUsername}`)
+		}
+	}, [currentUsername])
 
-        <SignupFormContainer onSubmit={handleSubmit(handleSignup)}>
-          <label>Please enter your username</label>
+	return (
+		<SignupWrapper>
+			<SignupContainer>
+				<Title>Welcome to CodeLeap network!</Title>
 
-          <input
-            placeholder="John doe"
-            id="username"
-            {...register('username')}
-          />
+				<SignupFormContainer onSubmit={handleSubmit(handleSignup)}>
+					<label>Please enter your username</label>
 
-          {errors.username && <span>{errors.username.message}</span>}
+					<input
+						placeholder="John doe"
+						id="username"
+						{...register('username')}
+					/>
 
-          <Button type="submit">ENTER</Button>
-        </SignupFormContainer>
-      </SignupContainer>
-    </SignupWrapper>
-  )
+					{errors.username && <span>{errors.username.message}</span>}
+
+					<Button type="submit">ENTER</Button>
+				</SignupFormContainer>
+			</SignupContainer>
+		</SignupWrapper>
+	)
 }

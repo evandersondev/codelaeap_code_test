@@ -1,6 +1,6 @@
 # Bonus Points
 
-[] Make it responsive on mobile devices.
+[x] Make it responsive on mobile devices.
 
 [] Implement some kind of permanent login logout solution.
 
