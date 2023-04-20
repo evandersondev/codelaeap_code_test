@@ -4,7 +4,7 @@
   </a>
 </p>
 
-<p align="center">CodeLeap - NetWork</p>
+<p align="center">CodeLeap - NetWork | Online here: <a href="https://codeleap.netlify.app/">Link</a></p>
 
 <br />
 <br />
