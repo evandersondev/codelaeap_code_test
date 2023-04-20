@@ -4,20 +4,20 @@ import { RootState } from '../redux/store'
 import { ReactElement, useEffect } from 'react'
 
 interface PrivateRouteProps {
-	children: ReactElement
-	redirectTo: string
+  children: ReactElement
+  redirectTo: string
 }
 
 export function PrivateRoute({ children, redirectTo }: PrivateRouteProps) {
-	const location = useLocation()
-	const navigate = useNavigate()
-	const isAuthenticated = useSelector((state: RootState) => state.auth.username)
+  const location = useLocation()
+  const navigate = useNavigate()
+  const isAuthenticated = useSelector((state: RootState) => state.auth.username)
 
-	useEffect(() => {
-		if (!location.pathname.includes(isAuthenticated)) {
-			navigate(redirectTo)
-		}
-	}, [isAuthenticated])
+  useEffect(() => {
+    if (!location.pathname.includes(isAuthenticated)) {
+      navigate(redirectTo)
+    }
+  }, [isAuthenticated])
 
-	return isAuthenticated ? children : <Navigate to={redirectTo} />
+  return isAuthenticated ? children : <Navigate to={redirectTo} />
 }

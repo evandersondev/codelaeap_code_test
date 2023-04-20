@@ -4,19 +4,20 @@ import { Routes, Route } from 'react-router-dom'
 import { PrivateRoute } from './PrivateRoutes'
 
 export function MainRoutes() {
-	return (
-		<Routes>
-			<Route path="/signup" element={<Signup />} />
-			<Route
-				path="/home/:username"
-				element={
-					<PrivateRoute redirectTo="/signup">
-						<Home />
-					</PrivateRoute>
-				}
-			/>
+  return (
+    <Routes>
+      <Route path="/" element={<Signup />} />
 
-			<Route path="*" element={<h1>Page not found!</h1>} />
-		</Routes>
-	)
+      <Route
+        path="/home/:username"
+        element={
+          <PrivateRoute redirectTo="/">
+            <Home />
+          </PrivateRoute>
+        }
+      />
+
+      <Route path="*" element={<h1>Page not found!</h1>} />
+    </Routes>
+  )
 }
